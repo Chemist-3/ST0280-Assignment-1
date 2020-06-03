@@ -15,14 +15,14 @@ namespace WeatherServiceWebApp
         {
             XmlDocument wsResponseXmlDoc = new XmlDocument();
 
-            //http://api.worldweatheronline.com/premium/v1/weather.ashx?key=****&q=London&format=xml&num_of_days=5
-            //id=jipx(spacetime0)
-            UriBuilder url = new UriBuilder();
-            url.Scheme = "http";// Same as "http://"
-
-            url.Host = "api.worldweatheronline.com";
-            url.Path = "premium/v1/weather.ashx";// change to v2
-            url.Query = "q=china&format=xml&num_of_days=5&key=x35ahuadjhmdp5rb75ddw2ha";
+            //https://api.data.gov.sg/v1/environment/2-hour-weather-forecast
+            UriBuilder url = new UriBuilder
+            {
+                Scheme = "http",
+                Host = "api.data.gov.sg",
+                Path = "/v1/environment/2-hour-weather-forecast",
+                Query = ""
+            };
 
             //Make a HTTP request to the global weather web service
             wsResponseXmlDoc = MakeRequest(url.ToString());

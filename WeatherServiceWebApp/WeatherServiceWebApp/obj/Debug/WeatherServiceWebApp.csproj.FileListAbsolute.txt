@@ -56,3 +56,8 @@ D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\o
 D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\obj\Debug\WeatherServiceWebApp.csproj.CopyComplete
 D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\obj\Debug\WeatherServiceWebApp.dll
 D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\obj\Debug\WeatherServiceWebApp.pdb
+D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\bin\Newtonsoft.Json.dll
+D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\bin\System.Net.Http.Formatting.dll
+D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\bin\Newtonsoft.Json.xml
+D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\bin\System.Net.Http.Formatting.xml
+D:\Files\CSC-Git\ST0280-Assignment-1\WeatherServiceWebApp\WeatherServiceWebApp\obj\Debug\WeatherServiceWebApp.csprojAssemblyReference.cache

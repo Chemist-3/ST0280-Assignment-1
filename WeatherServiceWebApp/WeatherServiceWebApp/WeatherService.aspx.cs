@@ -1,72 +1,55 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Xml;
+using WeatherServiceWebApp.Model;
 
 namespace WeatherServiceWebApp
 {
-    public partial class WeatherService : System.Web.UI.Page
+    public partial class WeatherService : Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            XmlDocument wsResponseXmlDoc = new XmlDocument();
+            // API (Static)
+            WebRequest request = WebRequest.Create("https://api.data.gov.sg/v1/environment/24-hour-weather-forecast?date_time=2020-06-08T06%3A00%3A00%2B08%3A00");
+            request.Timeout = 15 * 1000;
+            request.ContentType = "application/json";
 
-            //https://api.data.gov.sg/v1/environment/2-hour-weather-forecast
-            UriBuilder url = new UriBuilder
-            {
-                Scheme = "http",
-                Host = "api.data.gov.sg",
-                Path = "/v1/environment/2-hour-weather-forecast",
-                Query = ""
-            };
 
-            //Make a HTTP request to the global weather web service
-            wsResponseXmlDoc = MakeRequest(url.ToString());
-            if (wsResponseXmlDoc != null)
-            {
-                //display the XML response for user
-                String xmlString = wsResponseXmlDoc.InnerXml;
-                Response.ContentType = "text/xml";
-                Response.Write(xmlString);
-
-                // Save the document to a file and auto-indent the output.
-                XmlTextWriter writer = new XmlTextWriter(Server.MapPath("xmlweather.xml"), null);
-                writer.Formatting = Formatting.Indented;
-                wsResponseXmlDoc.Save(writer);
-
-                //You're never closing the writer, so I would expect it to keep the file open. That will stop future attempts to open the file
-
-                writer.Close();
-            }
-            else
-            {
-                Response.ContentType = "text/html";
-                Response.Write("<h2> error  accessing web service </h2>");
-            }
-        }
-
-        public static XmlDocument MakeRequest(string requestUrl)
-        {
             try
             {
-                HttpWebRequest request = WebRequest.Create(requestUrl) as HttpWebRequest;
-                request.Timeout = 15 * 1000;
-                request.KeepAlive = false;
-                HttpWebResponse response = request.GetResponse() as HttpWebResponse;
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.Load(response.GetResponseStream());
-                return (xmlDoc);
+                // Get the response.
+                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-            } catch (Exception ex)
+                // Get the stream containing content returned by the server.
+                Stream dataStream = response.GetResponseStream();
+                // Open the stream using a StreamReader for easy access.
+                StreamReader reader = new StreamReader(dataStream);
+                // Read the content.
+                string responseFromServer = reader.ReadToEnd();
+                var model = JsonConvert.DeserializeObject<RootObject>(responseFromServer);
+
+                // Display the content.
+                // TODO
+                Response.Write("Timestamp: " + model.items[0].timestamp + "<br>");
+                Response.Write("API Status: " + model.api_info.status);
+
+
+                // Cleanup the streams and the response.
+                reader.Close();
+                dataStream.Close();
+                response.Close();
+            }
+            catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
-                return null;
+                Console.WriteLine(ex.Message);
             }
         }
     }
 }
-

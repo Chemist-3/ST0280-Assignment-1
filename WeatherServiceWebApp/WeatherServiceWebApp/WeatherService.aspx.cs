@@ -16,8 +16,12 @@ namespace WeatherServiceWebApp
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // API (Static)
-            WebRequest request = WebRequest.Create("https://api.data.gov.sg/v1/environment/24-hour-weather-forecast?date_time=2020-06-08T06%3A00%3A00%2B08%3A00");
+            // API and DateTime query
+            string webAPI = "https://api.data.gov.sg/v1/environment/24-hour-weather-forecast?date_time=";
+            string query = DateTime.Now.ToString("yyyy-MM-dd'T'HH:mm:sszzz");
+
+            // Create Request for API and current datetime as query, URL encoded
+            WebRequest request = WebRequest.Create(webAPI + HttpUtility.UrlEncode(query));
             request.Timeout = 15 * 1000;
             request.ContentType = "application/json";
 
@@ -33,12 +37,14 @@ namespace WeatherServiceWebApp
                 StreamReader reader = new StreamReader(dataStream);
                 // Read the content.
                 string responseFromServer = reader.ReadToEnd();
+                // JSON Deserialize
                 var model = JsonConvert.DeserializeObject<RootObject>(responseFromServer);
 
                 // Display the content.
                 // TODO
                 Response.Write("Timestamp: " + model.items[0].timestamp + "<br>");
-                Response.Write("API Status: " + model.api_info.status);
+                Response.Write("API Status: " + model.api_info.status + "<br>");
+                
 
 
                 // Cleanup the streams and the response.
@@ -48,7 +54,9 @@ namespace WeatherServiceWebApp
             }
             catch (Exception ex)
             {
+                // Error handling
                 Console.WriteLine(ex.Message);
+                Response.Write("Error accessing web service. Check console for more infomation!");
             }
         }
     }

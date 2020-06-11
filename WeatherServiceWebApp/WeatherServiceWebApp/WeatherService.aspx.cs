@@ -41,17 +41,17 @@ namespace WeatherServiceWebApp
                 // JSON Deserialize
                 var model = JsonConvert.DeserializeObject<RootObject>(responseFromServer);
 
-                // Display the content.
+                // Converting to proper DateTime format
                 DateTime startDate = DateTime.Parse(model.items[0].valid_period.start);
                 DateTime endDate = DateTime.Parse(model.items[0].valid_period.end);
 
+                // Display the content.
                 Response.Write("<h1>Singapore's 24-hour Forecast from " + startDate + " to " + endDate + "</h1>");
                 Response.Write(String.Format("<br> Forecast: {0} <br> Temperature: Lowest {1}°C, Highest {2}°C", model.items[0].general.forecast, model.items[0].general.temperature.low, model.items[0].general.temperature.high));
                 Response.Write(String.Format("<br> Relative Humidity: {0}% - {1}% <br> Wind: {2} {3} - {4} km/h", model.items[0].general.relative_humidity.low, model.items[0].general.relative_humidity.high, model.items[0].general.wind.direction, model.items[0].general.wind.speed.low, model.items[0].general.wind.speed.high));
                 Response.Write("<br><br>Please note that the temperature, relative humidity and wind information shown above are the respective forecasts over a 24-hour period.");
+                Response.Write("<br><br>");
                 
-
-
                 // Cleanup the streams and the response.
                 reader.Close();
                 dataStream.Close();

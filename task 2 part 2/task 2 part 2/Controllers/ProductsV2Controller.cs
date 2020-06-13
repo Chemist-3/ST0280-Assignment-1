@@ -8,19 +8,19 @@ using task_2_part_2.Models;
 
 namespace task_2_part_2.Controllers
 {
-    [RoutePrefix("api/Products")]
+    [RoutePrefix("api/V2/products")]
 
     public class ProductsV2Controller : ApiController
     {
         static readonly IProductRepository repository = new ProductRepository();
 
-        [HttpGet]
         [Route("GetAllProducts")]
         public IEnumerable<Product> GetAllProducts()
         {
             return repository.GetAll();
         }
 
+        [Route("GetProduct/{id}", Name = "getProductId")]
         public Product GetProduct(int id)
         {
             Product item = repository.Get(id);
@@ -37,12 +37,15 @@ namespace task_2_part_2.Controllers
                 p => string.Equals(p.Category, category, StringComparison.OrdinalIgnoreCase));
         }
 
+        // https://localhost:44310/api/V2/products/itemPost
+        [Route("itemPost")]
         public HttpResponseMessage PostProduct(Product item)
         {
-            item = repository.Add(item);
-            var response = Request.CreateResponse<Product>(HttpStatusCode.Created, item);
+            item = repository.Add(item);    // Add item into repo
+            var response = Request.CreateResponse<Product>(HttpStatusCode.Created, item); // Response 201 Created
 
-            string uri = Url.Link("DefaultApi", new { id = item.Id });
+            // Call HTTPGET getProductId
+            string uri = Url.Link("getProductId", new { id = item.Id });
             response.Headers.Location = new Uri(uri);
             return response;
         }

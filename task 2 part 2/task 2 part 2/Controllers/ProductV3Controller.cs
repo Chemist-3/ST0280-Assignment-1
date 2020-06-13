@@ -31,21 +31,15 @@ namespace task_2_part_2.Controllers
         //https://localhost:44310/api/V3/Products/GetAllProducts/{id}
         [HttpGet]
         [Route("GetAllProducts/{id:int:min(2)}", Name ="getProductByIdV3")]
-        public Product  GetAllProducts(int id)
+        public HttpResponseMessage GetProduct(int id)
         {
             Product item = repository.Get(id);
-            try
+            if (item == null)
             {
-                if (item == null)
-                {
-                    var response = Request.CreateResponse<Product>(HttpStatusCode.NotFound, item);
-                    throw new HttpResponseException(response);
-                }
+                return Request.CreateResponse(HttpStatusCode.NotFound);
+                //throw new HttpResponseException(HttpStatusCode.NotFound);
             }
-            catch(Exception ex)
-            {
-            }
-            return item;
+            return Request.CreateResponse<Product>(HttpStatusCode.OK, item);
         }
 
 

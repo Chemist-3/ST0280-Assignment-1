@@ -27,7 +27,7 @@ namespace task_2_part_2.Models
             return products.Find(p => p.Id == id);
         }
 
-        public Product Add(Product item) //create new product
+        public Product Add(Product item) //create new product post method
         {
             if (item == null)
             {

@@ -14,14 +14,18 @@ namespace task_2_part_2.Controllers
     {
         static readonly IProductRepository repository = new ProductRepository();
 
-        [Route("GetAllProducts")]
+        //URI https://localhost:44310/api/V2/Products/GetProducts
+        [HttpGet]
+        [Route("GetProducts")]
         public IEnumerable<Product> GetAllProducts()
         {
             return repository.GetAll();
         }
 
-        [Route("GetProduct/{id}", Name = "getProductId")]
-        public Product GetProduct(int id)
+        //URI https://localhost:44310/api/V2/Products/GetProducts/{id}
+        [HttpGet]
+        [Route("GetProducts/{id}", Name = "getProductId")]
+        public Product GetAllProducts(int id)
         {
             Product item = repository.Get(id);
             if (item == null)
@@ -31,25 +35,49 @@ namespace task_2_part_2.Controllers
             return item;
         }
 
+        //URI https://localhost:44310/api/V2/Products/GetProductsCategory/{category}
+        [HttpGet]
+        [Route("GetProductsCategory/{category}")]
         public IEnumerable<Product> GetProductsByCategory(string category)
         {
             return repository.GetAll().Where(
                 p => string.Equals(p.Category, category, StringComparison.OrdinalIgnoreCase));
         }
 
-        // https://localhost:44310/api/V2/products/itemPost
+        //URI https://localhost:44310/api/V2/products/itemPost
+        [HttpPost]
         [Route("itemPost")]
         public HttpResponseMessage PostProduct(Product item)
         {
-            item = repository.Add(item);    // Add item into repo
+            item = repository.Add(item);    // Add item into 
             var response = Request.CreateResponse<Product>(HttpStatusCode.Created, item); // Response 201 Created
 
             // Call HTTPGET getProductId
-            string uri = Url.Link("getProductId", new { id = item.Id });
+            string uri = Url.Link("getProductId", new { id = item.Id }); //generates a link to the new product and sets
             response.Headers.Location = new Uri(uri);
             return response;
         }
 
+        [HttpPut]
+        [Route("GetProducts/{id:int}")]
+        public HttpResponseMessage PutProduct(int id, Product product)
+        {
+            product.Id = id;
+            HttpResponseMessage response = null;
+            if (!repository.Update(product))
+            {
+                response = Request.CreateResponse(HttpStatusCode.NotFound, "Invalid id. Invalid update request.");
+                // throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
+            else
+            {
+                response = Request.CreateResponse<Product>(HttpStatusCode.OK, product);
+            }
+            return response;
+        }
+
+
+        /*//URI https://localhost:44310/api/V2/products/
         public void PutProduct(int id, Product product)
         {
             product.Id = id;
@@ -58,7 +86,27 @@ namespace task_2_part_2.Controllers
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
 
+        }*/
+
+        [HttpDelete]
+        [Route("GetProducts/{id:int}")]
+        public HttpResponseMessage DeleteProduct(int id)
+        {
+            Product item = repository.Get(id);
+            HttpResponseMessage response = null;
+            if (item == null)
+            {
+                response = Request.CreateResponse(HttpStatusCode.NotFound, item.Id + " is not found. Invalid delete request.");
+            }
+            else
+            {
+                repository.Remove(id);
+
+                response = Request.CreateResponse<Product>(HttpStatusCode.Accepted, item);
+            }
+            return response;
         }
+
     }
 
     

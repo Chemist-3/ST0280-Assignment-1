@@ -17,12 +17,12 @@ namespace task_2_part_2.Models
 
         [Required(ErrorMessage = "Please enter product name")]
         [DisplayName("Product name")]
-        [StringLength(50, ErrorMessage = "Product name must not exceed 50 characters")]
+        [StringLength(15, ErrorMessage = "Product name must not exceed 15 characters")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Plese enter product category")]
         [DisplayName("Product category")]
-        [StringLength(50, ErrorMessage = "Product category must not exceed 20 characters")]
+        [StringLength(20, ErrorMessage = "Product category must not exceed 20 characters")]
         public string Category { get; set; }
 
         [Required(ErrorMessage = "Please enter product price")]

@@ -25,37 +25,50 @@ namespace task_2_part_2.Controllers
         //URI https://localhost:44310/api/V2/Products/GetProducts/{id}
         [HttpGet]
         [Route("GetProducts/{id}", Name = "getProductId")]
-        public Product GetAllProducts(int id)
+        public HttpResponseMessage GetProducts(int id) //change from Product to HttpResponseMessage to include error messages
         {
             Product item = repository.Get(id);
+
+            HttpResponseMessage response = null;
             if (item == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                response = Request.CreateResponse(HttpStatusCode.NotFound, "Invalid id. Item not found.");
             }
-            return item;
+            else
+            {
+                response = Request.CreateResponse<Product>(HttpStatusCode.OK, item);
+            }
+            return response;
+
         }
 
         //URI https://localhost:44310/api/V2/Products/GetProductsCategory/{category}
         [HttpGet]
-        [Route("GetProductsCategory/{category}")]
+        [Route("GetProducts")]
         public IEnumerable<Product> GetProductsByCategory(string category)
         {
             return repository.GetAll().Where(
                 p => string.Equals(p.Category, category, StringComparison.OrdinalIgnoreCase));
         }
 
-        //URI https://localhost:44310/api/V2/products/itemPost
+        //URI https://localhost:44310/api/V2/products/PostProduct
         [HttpPost]
-        [Route("itemPost")]
+        [Route("PostProduct")]
         public HttpResponseMessage PostProduct(Product item)
         {
-            item = repository.Add(item);    // Add item into 
-            var response = Request.CreateResponse<Product>(HttpStatusCode.Created, item); // Response 201 Created
 
-            // Call HTTPGET getProductId
-            string uri = Url.Link("getProductId", new { id = item.Id }); //generates a link to the new product and sets
-            response.Headers.Location = new Uri(uri);
-            return response;
+            if (ModelState.IsValid)
+            {
+                item = repository.Add(item);
+                var response = Request.CreateResponse<Product>(HttpStatusCode.Created, item);
+                string uri = Url.Link("getProductId", new { id = item.Id });
+                response.Headers.Location = new Uri(uri);
+                return response;
+            }
+            else
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+            }
         }
 
         [HttpPut]
@@ -76,17 +89,6 @@ namespace task_2_part_2.Controllers
             return response;
         }
 
-
-        /*//URI https://localhost:44310/api/V2/products/
-        public void PutProduct(int id, Product product)
-        {
-            product.Id = id;
-            if (!repository.Update(product))
-            {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-            }
-
-        }*/
 
         [HttpDelete]
         [Route("GetProducts/{id:int}")]

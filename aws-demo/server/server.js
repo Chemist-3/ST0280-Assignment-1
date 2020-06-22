@@ -41,4 +41,4 @@ app.get('/api/signs3', (req, res) => {
   });
 });
 
-app.listen(port, () => console.log(`Hard to port ${port}`));
+app.listen(port, () => console.log(`Server running on port ${port}`));

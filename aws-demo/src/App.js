@@ -5,12 +5,15 @@ import { v4 as randomString } from 'uuid';
 import Dropzone from 'react-dropzone';
 import { GridLoader } from 'react-spinners';
 
+const token = ''; // Enter you BITLY TOKEN 
+
 class App extends Component {
   constructor() {
     super();
     this.state = {
       isUploading: false,
       url: 'http://via.placeholder.com/450x450',
+      shorturl: '',
     };
   }
 
@@ -46,8 +49,8 @@ class App extends Component {
     axios
       .put(signedRequest, file, options)
       .then(response => {
-        this.setState({ isUploading: false, url });
         // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
+        this.shortenURL(url);
       })
       .catch(err => {
         this.setState({
@@ -65,35 +68,50 @@ class App extends Component {
       });
   };
 
+  shortenURL = (url) => {
+    const options = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    axios
+      .post('https://api-ssl.bitly.com/v4/shorten', 
+      {
+        "domain": "bit.ly",
+        "long_url": url
+      },
+        options,
+      ).then(response => {
+        console.log(response)
+        this.setState({ isUploading: false, url: response.data.long_url , shorturl: response.data.link });
+      }).catch()
+  };
+
   render() {
-    const { url, isUploading } = this.state;
+    const { url, isUploading, shorturl } = this.state;
     return (
       <div className="App">
         <h1>Upload your images to S3 Bucket!</h1>
         <img src={url} alt="" width="450px" />
-        <h2>{url}</h2>
-
+        <h3>{url}</h3>
+        <h3>{shorturl}</h3>
+        
         <Dropzone
+          className="dropzone"
           onDropAccepted={this.getSignedRequest}
-          style={{
-            position: 'relative',
-            width: 200,
-            height: 200,
-            borderWidth: 7,
-            marginTop: 100,
-            borderColor: 'rgb(102, 102, 102)',
-            borderStyle: 'dashed',
-            borderRadius: 5,
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            fontSize: 28,
-          }}
           accept="image/*"
-          multiple={false}
-        >
-          {isUploading ? <GridLoader /> : <p>Drop File or Click Here</p>}
+          multiple={false}>
+          {({getRootProps, getInputProps}) => (
+            <section>
+              <div {...getRootProps({className: 'dropzone'})}>
+                <input {...getInputProps()} />
+                {isUploading ? <GridLoader /> : <p>Drop or Click to upload image Here</p>}
+              </div>
+            </section>
+          )}
         </Dropzone>
+
       </div>
     );
   }

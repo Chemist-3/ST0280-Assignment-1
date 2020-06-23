@@ -5,7 +5,7 @@ import { v4 as randomString } from 'uuid';
 import Dropzone from 'react-dropzone';
 import { GridLoader } from 'react-spinners';
 
-const token = ''; // Enter you BITLY TOKEN 
+const TOKEN = ''; // Enter you BITLY TOKEN 
 
 class App extends Component {
   constructor() {
@@ -19,10 +19,12 @@ class App extends Component {
 
   getSignedRequest = ([file]) => {
     this.setState({ isUploading: true });
-    // We are creating a file name that consists of a random string, and the name of the file that was just uploaded with the spaces removed and hyphens inserted instead. This is done using the .replace function with a specific regular expression. This will ensure that each file uploaded has a unique name which will prevent files from overwriting other files due to duplicate names.
+    // We are creating a file name that consists of a random string, and the name of the file that was just uploaded with the spaces removed and hyphens inserted instead.
+    // This is done using the .replace function with a specific regular expression. This will ensure that each file uploaded has a unique name which will prevent files from overwriting other files due to duplicate names.
     const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`;
 
-    // We will now send a request to our server to get a "signed url" from Amazon. We are essentially letting AWS know that we are going to upload a file soon. We are only sending the file-name and file-type as strings. We are not sending the file itself at this point.
+    // We will now send a request to our server to get a "signed url" from Amazon. We are essentially letting AWS know that we are going to upload a file soon.
+    // We are only sending the file-name and file-type as strings. We are not sending the file itself at this point.
     axios
       .get('/api/signs3', {
         params: {
@@ -32,6 +34,7 @@ class App extends Component {
       })
       .then(response => {
         const { signedRequest, url } = response.data;
+        // call uploadFile
         this.uploadFile(file, signedRequest, url);
       })
       .catch(err => {
@@ -40,6 +43,7 @@ class App extends Component {
   };
 
   uploadFile = (file, signedRequest, url) => {
+    // setting req headers
     const options = {
       headers: {
         'Content-Type': file.type,
@@ -49,7 +53,7 @@ class App extends Component {
     axios
       .put(signedRequest, file, options)
       .then(response => {
-        // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
+        // call shortenURL to shorten the url recieved by Amazon via BITLY
         this.shortenURL(url);
       })
       .catch(err => {
@@ -69,9 +73,10 @@ class App extends Component {
   };
 
   shortenURL = (url) => {
+    // setting req headers for content type and authorization
     const options = {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${TOKEN}`,
         'Content-Type': 'application/json',
       },
     };

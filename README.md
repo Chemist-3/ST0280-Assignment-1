@@ -6,12 +6,12 @@ https://data.gov.sg/dataset/weather-forecast
 
 ## Images
 * [Diagram](#Diagram)
-* [Page_Load()](#Images)
-* [Client](#Images)
+* [Page_Load()](#Page_Load())
+* [Client](#Client)
 
 ### Diagram
-![Diagram](https://github.com/Chemist-3/ST0280-Assignment-1/tree/docs/diagram.png)
+![Diagram](https://github.com/Chemist-3/ST0280-Assignment-1/blob/T1/docs/diagram.png)
 ### Page_Load()
-![Page_Load()](https://github.com/Chemist-3/ST0280-Assignment-1/tree/docs/server.png)
+![Page_Load()](https://github.com/Chemist-3/ST0280-Assignment-1/blob/T1/docs/server.png)
 ### Client
-![Client](https://github.com/Chemist-3/ST0280-Assignment-1/tree/docs/client.png)
+![Client](https://github.com/Chemist-3/ST0280-Assignment-1/blob/T1/docs/client.png)

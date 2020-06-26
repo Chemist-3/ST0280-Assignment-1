@@ -3,4 +3,4 @@ Assignment 1: Creating and Consuming Web API (Restful Service) for Singapore Pol
 
 Sequence Diagrams under Sequence_Diagrams Branch
 
-relative tasks in 1-8 in their own reqpective branches.
+Relative tasks 1-8 in their own respective branches.

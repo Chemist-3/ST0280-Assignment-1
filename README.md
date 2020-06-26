@@ -1,6 +1,3 @@
-# ST0280-AssignmenT7
-Assignment 1: Creating and Consuming Web API (Restful Service) for Singapore Polytechnic's Cloud and Service Development (ST0280) Module
-
 # Task 7 Eventbrite & Telegram Integration via Integromat
 
 ### Images
